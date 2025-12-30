@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morse Code Converter</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="morse-bg">
+      <span class="dot"></span>
+      <span class="dash"></span>
+      <span class="dot"></span>
+      <span class="dash"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <span class="morse-symbol">• − • −</span>
+        </div>
+        <h1 class="title">Morse Code Converter</h1>
+        <p class="subtitle">Transform text to Morse and decode Morse to text</p>
+      </header>
+
+      <div class="converter-wrapper">
+        <form
+          method="POST"
+          action="{{url_for('convert_text')}}"
+          class="converter-form"
+        >
+          <div class="input-section">
+            <label for="input-text" class="input-label">
+              <span class="label-icon">📝</span>
+              Input
+            </label>
+            <textarea
+              id="input-text"
+              name="input_text"
+              class="input-textarea"
+              placeholder="Type your text or morse code here..."
+              rows="8"
+            >
+{{input_text or ''}}</textarea
+            >
+
+            <div class="button-group">
+              <button
+                type="submit"
+                name="action"
+                value="encode"
+                class="btn btn-primary"
+              >
+                <span class="btn-icon">→</span>
+                Text to Morse
+              </button>
+              <button
+                type="submit"
+                name="action"
+                value="decode"
+                class="btn btn-secondary"
+              >
+                <span class="btn-icon">←</span>
+                Morse to Text
+              </button>
+            </div>
+          </div>
+
+          <div class="divider">
+            <div class="divider-line"></div>
+            <div class="divider-icon">⚡</div>
+            <div class="divider-line"></div>
+          </div>
+
+          <div class="output-section">
+            <label for="output-text" class="output-label">
+              <span class="label-icon">✨</span>
+              Output
+            </label>
+            <div id="output-text" class="output-display">
+{% if output_text %} {{ output_text }} {% else %}
+              <span class="placeholder-text"
+>Your converted text will appear here...</span>
+{% endif %}
+            </div>
+
+            {% if output_text %}
+            <button
+              type="button"
+              class="btn btn-copy"
+              onclick="copyToClipboard()"
+            >
+              <span class="btn-icon">📋</span>
+              Copy Result
+            </button>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+
+      <footer class="footer">
+        <div class="morse-reference">
+          <h3>Quick Reference</h3>
+          <div class="reference-grid">
+            <span>A: • −</span>
+            <span>B: − • • •</span>
+            <span>C: − • − •</span>
+            <span>Space: /</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      function copyToClipboard() {
+        const output = document.getElementById("output-text");
+        const text = output.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.querySelector(".btn-copy");
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<span class="btn-icon">✓</span> Copied!';
+          btn.classList.add("copied");
+
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove("copied");
+          }, 2000);
+        });
+      }
+
+      // Add animation to textarea on focus
+      const textarea = document.getElementById("input-text");
+      textarea.addEventListener("focus", function () {
+        this.parentElement.classList.add("focused");
+      });
+      textarea.addEventListener("blur", function () {
+        this.parentElement.classList.remove("focused");
+      });
+    </script>
+  </body>
+</html>
